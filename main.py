@@ -16,12 +16,14 @@ def init(args):
 
 def attack(username):
     if username not in TESTED:
-        user = User(username.replace('\n', ''))
-        user.execute()
-        if user:
-            write('hacked.csv', str(user))
-        write('tested.txt', username)
-
+        try:
+            user = User(username.replace('\n', ''))
+            user.execute()
+            if user:
+                write('hacked.csv', str(user))
+            write('tested.txt', username)
+        except:
+            pass
 
 def generate_username():
     dict_path = input('Enter the dictionary filepath: ')
