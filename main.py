@@ -1,12 +1,11 @@
 from os import path
-from typing import List, Any
-
 from ob_request import User
 from helper import *
 import multiprocessing as mp
 from tqdm import *
+import speedtest
 
-TESTED: List[Any] = []
+TESTED = []
 
 
 def init(args):
@@ -24,6 +23,7 @@ def attack(username):
             write('tested.txt', username)
         except:
             pass
+
 
 def generate_username():
     dict_path = input('Enter the dictionary filepath: ')
