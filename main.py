@@ -3,6 +3,7 @@ from ob_request import User
 from helper import *
 import multiprocessing as mp
 from tqdm import *
+import time
 import speedtest
 
 TESTED = []
@@ -72,6 +73,7 @@ def test_username():
                 write('succesfull.csv', f'{i[:-1]},{speed}\n')
                 connected = True
             except:
+                time.sleep(10)
                 retry = retry - 1
 
 
