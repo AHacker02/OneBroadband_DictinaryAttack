@@ -93,6 +93,7 @@ def test_username():
             time.sleep(15)
 
             retry = 5
+
             connected = False
             connected_account: str
             while connected != True & retry > 0:
