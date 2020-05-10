@@ -1,6 +1,6 @@
 import os
 from ob_request import User
-from helper import *
+from menu_logic import *
 import multiprocessing as mp
 from tqdm import *
 import time
@@ -8,7 +8,8 @@ import speedtest
 from datetime import datetime
 
 TESTED = []
-dsl = 'noipdefault\ndefaultroute\nreplacedefaultroute\nhide-password\nnoauth\npersist\nplugin rp-pppoe.so eth0\nuser "{}"\nusepeerdns'
+dsl = 'noipdefault\ndefaultroute\nreplacedefaultroute\nhide-password\nnoauth\npersist\nplugin rp-pppoe.so eth0\nuser ' \
+      '"{}"\nusepeerdns '
 
 
 def init(args):
