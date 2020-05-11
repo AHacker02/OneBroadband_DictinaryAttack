@@ -49,4 +49,6 @@ def test_connection(user:User):
     os.popen('sudo ifconfig eth0 down')
     os.popen(f'sudo macchanger -m {user.mac} eth0')
     os.popen('sudo ifconfig eth0 down')
+    os.popen('pon dsl-provider')
+
     
