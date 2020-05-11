@@ -8,8 +8,7 @@ import menu_logic as m
 import attacks
 from user import User
 
-DSL = 'noipdefault\ndefaultroute\nreplacedefaultroute\nhide-password\nnoauth\npersist\nplugin rp-pppoe.so eth0\nuser ' \
-      '"{}"\nusepeerdns '
+
 
 
 def main_menu():
@@ -39,7 +38,7 @@ def dictionary_attack():
 def test_username_connection():
     if os.path.isfile('resources/hacked.csv'):
         users = m.get_hacked_users()
-
+        map(m.test_connection,users)
 
 
 
