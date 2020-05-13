@@ -11,7 +11,7 @@ def login(user: User):
     login_url = 'http://customer.onebroadband.in/Customer/LoginClient.aspx?h8=1'
     iframe_url = 'http://customer.onebroadband.in/Customer/Gauge.aspx'
 
-    # Open homepage
+    # Open homepage%
     try:
         with requests.Session() as request:
             home_page = BeautifulSoup(request.get(home_url).content, 'html.parser')

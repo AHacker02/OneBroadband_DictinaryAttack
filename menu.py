@@ -9,8 +9,6 @@ import attacks
 from user import User
 
 
-
-
 def main_menu():
     f = Figlet(font='slant')
     menu = ConsoleMenu(f.renderText('OneBroadband'))
@@ -38,7 +36,8 @@ def dictionary_attack():
 def test_username_connection():
     if os.path.isfile('resources/hacked.csv'):
         users = m.get_hacked_users()
-        map(m.test_connection,users)
 
-
-
+        for user in users:
+            u = m.test_connection(user)
+            if u:
+                print(str(u))
