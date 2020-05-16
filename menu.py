@@ -7,6 +7,7 @@ from tqdm import *
 import menu_logic as m
 import attacks
 from user import User
+from termcolor import colored
 
 
 def main_menu():
@@ -40,4 +41,4 @@ def test_username_connection():
         for user in users:
             u = m.test_connection(user)
             if u:
-                print(str(u))
+                print(colored(str(u),'red'))

